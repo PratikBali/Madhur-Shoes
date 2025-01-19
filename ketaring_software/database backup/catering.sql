@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2024 at 12:59 PM
+-- Generation Time: Jan 17, 2025 at 01:09 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -117,72 +117,49 @@ INSERT INTO `credit_card` (`id`, `product_seller_email_id`, `category`, `full_na
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `customer_details`
+--
+
+CREATE TABLE `customer_details` (
+  `id` int(11) NOT NULL,
+  `product_bill_no` varchar(255) NOT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `phone_number` varchar(255) NOT NULL,
+  `grand_total` varchar(255) NOT NULL,
+  `sale_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `main_shoes`
 --
 
 CREATE TABLE `main_shoes` (
   `id` int(11) NOT NULL,
   `product_id` varchar(200) NOT NULL,
-  `product_seller_email_id` varchar(200) NOT NULL,
-  `product_seller_name` varchar(200) NOT NULL,
-  `side` varchar(500) NOT NULL,
-  `up` varchar(500) NOT NULL,
-  `bottom` varchar(500) NOT NULL,
-  `back` varchar(500) NOT NULL,
+  `bar_code_no` varchar(13) DEFAULT NULL,
+  `product_seller_email_id` varchar(200) DEFAULT NULL,
+  `side` varchar(500) DEFAULT NULL,
+  `up` varchar(500) DEFAULT NULL,
+  `bottom` varchar(500) DEFAULT NULL,
+  `back` varchar(500) DEFAULT NULL,
   `category` varchar(200) NOT NULL,
-  `product_name` varchar(500) NOT NULL,
-  `delivery_charge` varchar(500) NOT NULL,
+  `male_category` varchar(255) DEFAULT NULL,
+  `female_category` varchar(255) DEFAULT NULL,
+  `child_male_category` varchar(255) DEFAULT NULL,
+  `child_female_category` varchar(255) DEFAULT NULL,
+  `other_category` varchar(255) DEFAULT NULL,
+  `artical_no` varchar(255) NOT NULL,
+  `brand_name` varchar(500) NOT NULL,
   `product_color` varchar(500) NOT NULL,
-  `product_price` varchar(500) NOT NULL,
   `quantity` varchar(500) NOT NULL,
-  `size_1` int(200) NOT NULL,
-  `size_1_original_price` int(200) NOT NULL,
-  `size_1_price` int(200) NOT NULL,
-  `size_2` int(200) NOT NULL,
-  `size_2_original_price` int(200) NOT NULL,
-  `size_2_price` int(200) NOT NULL,
-  `size_3` int(200) NOT NULL,
-  `size_3_original_price` int(200) NOT NULL,
-  `size_3_price` int(200) NOT NULL,
-  `size_4` int(200) NOT NULL,
-  `size_4_original_price` int(200) NOT NULL,
-  `size_4_price` int(200) NOT NULL,
-  `size_5` int(200) NOT NULL,
-  `size_5_original_price` int(200) NOT NULL,
-  `size_5_price` int(200) NOT NULL,
-  `size_6` int(200) NOT NULL,
-  `size_6_original_price` int(200) NOT NULL,
-  `size_6_price` int(200) NOT NULL,
-  `size_7` int(200) NOT NULL,
-  `size_7_original_price` int(200) NOT NULL,
-  `size_7_price` int(200) NOT NULL,
-  `size_8` int(200) NOT NULL,
-  `size_8_original_price` int(200) NOT NULL,
-  `size_8_price` int(200) NOT NULL,
-  `size_9` int(200) NOT NULL,
-  `size_9_original_price` int(200) NOT NULL,
-  `size_9_price` int(200) NOT NULL,
-  `size_10` int(200) NOT NULL,
-  `size_10_original_price` int(200) NOT NULL,
-  `size_10_price` int(200) NOT NULL,
+  `product_size` varchar(255) NOT NULL,
+  `original_price` int(200) NOT NULL,
+  `sell_price` int(200) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `main_shoes`
---
-
-INSERT INTO `main_shoes` (`id`, `product_id`, `product_seller_email_id`, `product_seller_name`, `side`, `up`, `bottom`, `back`, `category`, `product_name`, `delivery_charge`, `product_color`, `product_price`, `quantity`, `size_1`, `size_1_original_price`, `size_1_price`, `size_2`, `size_2_original_price`, `size_2_price`, `size_3`, `size_3_original_price`, `size_3_price`, `size_4`, `size_4_original_price`, `size_4_price`, `size_5`, `size_5_original_price`, `size_5_price`, `size_6`, `size_6_original_price`, `size_6_price`, `size_7`, `size_7_original_price`, `size_7_price`, `size_8`, `size_8_original_price`, `size_8_price`, `size_9`, `size_9_original_price`, `size_9_price`, `size_10`, `size_10_original_price`, `size_10_price`, `created_at`, `updated_at`) VALUES
-(1, 'pid01', 'akashsshinde0707@gmail.com', '', 'shoes/1side.png', 'shoes/1up.png', 'shoes/1bottom.png', 'shoes/1back.png', 'male', 'Nike Pegasus Custom Trail-Running Shoes', '100', 'black', '5000', '44', 1, 100, 150, 2, 200, 250, 3, 300, 350, 4, 400, 450, 5, 500, 560, 6, 600, 650, 5, 700, 750, 8, 800, 850, 0, 900, 950, 10, 1000, 1100, '2024-09-05 09:38:31', '2024-12-03 11:28:30'),
-(2, 'pid02', 'akashsshinde0707@gmail.com', '', 'shoes/2side.png', 'shoes/2up.png', 'shoes/2bottom.png', 'shoes/2back.png', 'male', 'Nike Pegasus Custom Trail-Running Shoes', '50', 'vintage green', '1000', '50', 1, 100, 150, 2, 200, 250, 2, 300, 350, 4, 400, 450, 5, 500, 550, 6, 600, 650, 6, 700, 750, 5, 800, 850, 9, 900, 950, 10, 1000, 1100, '2024-09-05 09:38:31', '2024-12-03 05:54:54'),
-(3, 'pid03', 'akashsshinde0707@gmail.com', '', 'shoes/3side.png', 'shoes/3up.png', 'shoes/3bottom.png', 'shoes/3back.png', 'male', 'Nike Pegasus Custom Trail-Running Shoes', '300', 'orange', '15000', '53', 1, 100, 150, 2, 200, 250, 2, 300, 350, 3, 400, 450, 5, 500, 550, 6, 600, 650, 7, 700, 750, 8, 800, 850, 9, 900, 950, 10, 1000, 1100, '2024-09-05 09:38:31', '2024-12-03 05:56:00'),
-(4, 'pid04', 'akashsshinde0707@gmail.com', '', 'shoes/5side.png', 'shoes/5up.png', 'shoes/5bottom.png', 'shoes/5back.png', 'female', 'Nike Pegasus Custom Trail-Running Shoes', '400', 'white', '20000', '50', 1, 100, 150, 1, 200, 250, 3, 300, 350, 2, 400, 450, 5, 500, 550, 6, 600, 650, 6, 700, 750, 7, 800, 850, 9, 900, 950, 10, 1000, 1100, '2024-09-05 09:38:31', '2024-12-03 05:57:10'),
-(5, 'pid05', 'akashsshinde0707@gmail.com', '', 'shoes/4side.png', 'shoes/4up.png', 'shoes/4bottom.png', 'shoes/4back.png', 'female', 'Nike Pegasus Custom Trail-Running Shoes', '500', 'green frost', '25000', '51', 1, 100, 150, 2, 200, 250, 1, 300, 350, 4, 400, 450, 5, 500, 550, 6, 600, 650, 7, 700, 750, 8, 800, 850, 7, 900, 950, 10, 1000, 1100, '2024-09-05 09:38:31', '2024-12-03 06:02:45'),
-(38, 'pid06', 'akashsshinde0707@gmail.com', '', 'shoes/6side2.png', 'shoes/6up2.png', 'shoes/6bottom2.png', 'shoes/6back2.png', 'female', 'Nike Pegasus Custom Trail-Running Shoes', '800', 'Taupe Grey', '35000', '54', 1, 100, 150, 2, 200, 250, 3, 300, 350, 4, 400, 450, 5, 500, 550, 5, 600, 650, 7, 700, 750, 8, 800, 850, 9, 900, 950, 10, 1000, 1100, '2024-09-05 09:38:31', '2024-12-03 06:03:59'),
-(40, 'PID07', 'akashsshinde0707@gmail.com', '', 'shoes/6side2.png', 'shoes/6up2.png', 'shoes/6bottom2.png', 'shoes/6back2.png', 'male', 'aa', '', 'red', '12121', '51', 1, 100, 150, 2, 200, 250, 2, 300, 350, 4, 400, 450, 5, 500, 550, 6, 600, 650, 5, 700, 750, 8, 800, 850, 8, 900, 950, 10, 1000, 1100, '2024-11-25 07:08:39', '2024-12-03 11:44:43'),
-(41, 'PID08', '', '', 'shoes/5side.png', 'shoes/5up.png', 'shoes/5bottom.png', 'shoes/5back.png', 'female', 'rr', '', 'red', '', '19', 2, 100, 150, 2, 200, 250, 2, 300, 350, 1, 400, 450, 2, 500, 550, 2, 600, 650, 2, 700, 750, 2, 800, 850, 2, 900, 950, 2, 1000, 1050, '2024-12-02 10:58:22', '2024-12-03 11:56:29'),
-(42, 'PID09', '', '', 'shoes/1side.png', 'shoes/1up.png', 'shoes/1bottom.png', 'shoes/1back.png', 'other', 'ww', '', 'blue', '', '10', 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2, '2024-12-02 11:41:27', '2024-12-03 11:45:30');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -193,66 +170,28 @@ INSERT INTO `main_shoes` (`id`, `product_id`, `product_seller_email_id`, `produc
 CREATE TABLE `main_shoes_original` (
   `id` int(11) NOT NULL,
   `product_id` varchar(200) NOT NULL,
+  `bar_code_no` varchar(255) NOT NULL,
   `product_seller_email_id` varchar(200) NOT NULL,
-  `product_seller_name` varchar(200) NOT NULL,
   `side` varchar(500) NOT NULL,
   `up` varchar(500) NOT NULL,
   `bottom` varchar(500) NOT NULL,
   `back` varchar(500) NOT NULL,
   `category` varchar(200) NOT NULL,
-  `product_name` varchar(500) NOT NULL,
-  `delivery_charge` varchar(500) NOT NULL,
+  `male_category` varchar(255) DEFAULT NULL,
+  `female_category` varchar(255) DEFAULT NULL,
+  `child_male_category` varchar(255) DEFAULT NULL,
+  `child_female_category` varchar(255) DEFAULT NULL,
+  `other_category` varchar(255) DEFAULT NULL,
+  `artical_no` varchar(255) NOT NULL,
+  `brand_name` varchar(500) NOT NULL,
   `product_color` varchar(500) NOT NULL,
-  `product_price` varchar(500) NOT NULL,
   `quantity` varchar(500) NOT NULL,
-  `size_1` int(200) NOT NULL,
-  `size_1_price` int(200) NOT NULL,
-  `size_2` int(200) NOT NULL,
-  `size_2_price` int(200) NOT NULL,
-  `size_3` int(200) NOT NULL,
-  `size_3_price` int(200) NOT NULL,
-  `size_4` int(200) NOT NULL,
-  `size_4_price` int(200) NOT NULL,
-  `size_5` int(200) NOT NULL,
-  `size_5_price` int(200) NOT NULL,
-  `size_6` int(200) NOT NULL,
-  `size_6_price` int(200) NOT NULL,
-  `size_7` int(200) NOT NULL,
-  `size_7_price` int(200) NOT NULL,
-  `size_8` int(200) NOT NULL,
-  `size_8_price` int(200) NOT NULL,
-  `size_9` int(200) NOT NULL,
-  `size_9_price` int(200) NOT NULL,
-  `size_10` int(200) NOT NULL,
-  `size_10_price` int(200) NOT NULL,
-  `size_1_original_price` int(200) NOT NULL,
-  `size_2_original_price` int(200) NOT NULL,
-  `size_3_original_price` int(200) NOT NULL,
-  `size_4_original_price` int(200) NOT NULL,
-  `size_5_original_price` int(200) NOT NULL,
-  `size_6_original_price` int(200) NOT NULL,
-  `size_7_original_price` int(200) NOT NULL,
-  `size_8_original_price` int(200) NOT NULL,
-  `size_9_original_price` int(200) NOT NULL,
-  `size_10_original_price` int(200) NOT NULL,
+  `product_size` varchar(255) NOT NULL,
+  `original_price` int(200) NOT NULL,
+  `sell_price` int(200) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `main_shoes_original`
---
-
-INSERT INTO `main_shoes_original` (`id`, `product_id`, `product_seller_email_id`, `product_seller_name`, `side`, `up`, `bottom`, `back`, `category`, `product_name`, `delivery_charge`, `product_color`, `product_price`, `quantity`, `size_1`, `size_1_price`, `size_2`, `size_2_price`, `size_3`, `size_3_price`, `size_4`, `size_4_price`, `size_5`, `size_5_price`, `size_6`, `size_6_price`, `size_7`, `size_7_price`, `size_8`, `size_8_price`, `size_9`, `size_9_price`, `size_10`, `size_10_price`, `size_1_original_price`, `size_2_original_price`, `size_3_original_price`, `size_4_original_price`, `size_5_original_price`, `size_6_original_price`, `size_7_original_price`, `size_8_original_price`, `size_9_original_price`, `size_10_original_price`, `created_at`, `updated_at`) VALUES
-(1, 'pid01', 'akashsshinde0707@gmail.com', '', 'shoes/1side.png', 'shoes/1up.png', 'shoes/1bottom.png', 'shoes/1back.png', 'male', 'Nike Pegasus Custom Trail-Running Shoes', '100', 'black', '5000', '5', 1, 150, 2, 250, 3, 350, 4, 450, 5, 550, 6, 650, 5, 750, 8, 850, 9, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-09-05 09:38:31', '2024-12-02 06:07:19'),
-(2, 'pid02', 'akashsshinde0707@gmail.com', '', 'shoes/2side.png', 'shoes/2up.png', 'shoes/2bottom.png', 'shoes/2back.png', 'male', 'Nike Pegasus Custom Trail-Running Shoes', '50', 'vintage green', '1000', '5', 1, 150, 2, 250, 2, 350, 4, 450, 5, 550, 6, 650, 6, 750, 5, 850, 9, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-09-05 09:38:31', '2024-12-02 06:07:19'),
-(3, 'pid03', 'akashsshinde0707@gmail.com', '', 'shoes/3side.png', 'shoes/3up.png', 'shoes/3bottom.png', 'shoes/3back.png', 'male', 'Nike Pegasus Custom Trail-Running Shoes', '300', 'orange', '15000', '18', 1, 150, 2, 250, 2, 350, 3, 450, 5, 550, 6, 650, 7, 750, 8, 850, 9, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-09-05 09:38:31', '2024-12-02 06:07:19'),
-(4, 'pid04', 'akashsshinde0707@gmail.com', '', 'shoes/5side.png', 'shoes/5up.png', 'shoes/5bottom.png', 'shoes/5back.png', 'female', 'Nike Pegasus Custom Trail-Running Shoes', '400', 'white', '20000', '11', 1, 150, 1, 250, 3, 350, 3, 450, 5, 550, 6, 650, 6, 750, 7, 850, 9, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-09-05 09:38:31', '2024-12-02 06:07:19'),
-(5, 'pid05', 'akashsshinde0707@gmail.com', '', 'shoes/4side.png', 'shoes/4up.png', 'shoes/4bottom.png', 'shoes/4back.png', 'female', 'Nike Pegasus Custom Trail-Running Shoes', '500', 'green frost', '25000', '21', 1, 150, 2, 250, 1, 350, 4, 450, 5, 550, 6, 650, 7, 750, 8, 850, 7, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-09-05 09:38:31', '2024-12-02 06:07:19'),
-(38, 'pid06', 'akashsshinde0707@gmail.com', '', 'shoes/6side2.png', 'shoes/6up2.png', 'shoes/6bottom2.png', 'shoes/6back2.png', 'female', 'Nike Pegasus Custom Trail-Running Shoes', '800', 'Taupe Grey', '35000', '29', 1, 150, 2, 250, 3, 350, 4, 450, 5, 550, 5, 650, 7, 750, 8, 850, 9, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-09-05 09:38:31', '2024-12-02 06:07:19'),
-(40, 'PID07', 'akashsshinde0707@gmail.com', '', 'shoes/ncp_logo1-removebg-preview (1).png', 'shoes/ncp_logo1-removebg-preview (1).png', 'shoes/ncp_logo1-removebg-preview (1).png', '', 'male', 'aa', '', 'red', '12121', '6', 1, 150, 2, 250, 2, 350, 4, 450, 5, 550, 6, 650, 7, 750, 8, 850, 8, 950, 10, 1100, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-11-25 07:08:39', '2024-12-02 06:07:19'),
-(41, 'PID08', '', '', 'shoes/india-temples-map.jpg', 'shoes/india-temples-map.jpg', 'shoes/india-temples-map.jpg', 'shoes/india-temples-map.jpg', 'female', 'rr', '', 'red', '', '20', 2, 150, 2, 250, 2, 350, 2, 450, 2, 550, 2, 650, 2, 750, 2, 850, 2, 950, 2, 1050, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, '2024-12-02 10:58:22', NULL),
-(42, 'PID09', '', '', 'shoes/india-temples-map.jpg', 'shoes/india-temples-map.jpg', 'shoes/india-temples-map.jpg', 'shoes/india-temples-map.jpg', 'other', 'ww', '', 'blue', '', '10', 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, '2024-12-02 11:41:27', NULL);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -335,34 +274,26 @@ INSERT INTO `products` (`id`, `product_name`, `side`, `product_price`) VALUES
 
 CREATE TABLE `product_sales` (
   `id` int(11) NOT NULL,
-  `product_id` varchar(200) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
+  `product_id` varchar(255) NOT NULL,
+  `product_bill_no` varchar(200) NOT NULL,
+  `bar_code_no` varchar(255) NOT NULL,
+  `artical_no` varchar(255) NOT NULL,
+  `brand_name` varchar(255) NOT NULL,
   `category` varchar(200) NOT NULL,
-  `color` varchar(255) NOT NULL,
-  `size` varchar(255) NOT NULL,
+  `male_category` varchar(255) DEFAULT NULL,
+  `female_category` varchar(255) DEFAULT NULL,
+  `child_male_category` varchar(255) DEFAULT NULL,
+  `child_female_category` varchar(255) DEFAULT NULL,
+  `other_category` varchar(255) DEFAULT NULL,
+  `product_color` varchar(255) NOT NULL,
+  `product_size` varchar(255) NOT NULL,
   `quantity` int(11) NOT NULL,
+  `aval_quantity` varchar(255) NOT NULL,
   `original_price` int(200) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
   `discount` int(200) NOT NULL,
-  `total_price` decimal(10,2) NOT NULL,
   `sell_price` decimal(10,2) NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `phone_number` varchar(15) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `product_sales`
---
-
-INSERT INTO `product_sales` (`id`, `product_id`, `product_name`, `category`, `color`, `size`, `quantity`, `original_price`, `price`, `discount`, `total_price`, `sell_price`, `customer_name`, `phone_number`, `created_at`) VALUES
-(27, 'pid01', 'Nike Pegasus Custom Trail-Running Shoes', 'male', 'black', 'size_7', 1, 0, 700.00, 0, 700.00, 700.00, 'shanku', '777', '2024-11-29 12:20:20'),
-(28, 'pid02', 'Nike Pegasus Custom Trail-Running Shoes', 'male', 'vintage green', 'size_8', 2, 0, 800.00, 0, 1600.00, 1600.00, 'akash s shinde', '8329400225', '2024-11-29 12:22:17'),
-(29, 'pid03', 'Nike Pegasus Custom Trail-Running Shoes', 'male', 'orange', 'size_4', 1, 0, 400.00, 0, 400.00, 400.00, 'xzc', '2222', '2024-12-02 04:32:35'),
-(30, 'pid04', 'Nike Pegasus Custom Trail-Running Shoes', 'female', 'white', 'size_4', 1, 400, 450.00, 0, 450.00, 430.00, 'harsh magar', '1234567890', '2024-12-02 08:33:19'),
-(31, 'pid01', 'Nike Pegasus Custom Trail-Running Shoes', 'male', 'black', 'size_9', 1, 900, 950.00, 2, 950.00, 931.00, 'shankar tormal', '2345443322', '2024-12-02 10:54:39'),
-(32, 'PID07', 'aa', 'male', 'red', 'size_7', 2, 700, 750.00, 10, 1500.00, 1350.00, 'vinod shinde', '1234567890', '2024-12-03 11:38:31'),
-(33, 'PID08', 'rr', 'female', 'red', 'size_4', 1, 400, 450.00, 10, 450.00, 405.00, 'shanku', '1232553423', '2024-12-03 11:56:29');
 
 -- --------------------------------------------------------
 
@@ -460,10 +391,17 @@ ALTER TABLE `credit_card`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `customer_details`
+--
+ALTER TABLE `customer_details`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `main_shoes`
 --
 ALTER TABLE `main_shoes`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `bar_code_no` (`bar_code_no`);
 
 --
 -- Indexes for table `main_shoes_original`
@@ -536,16 +474,22 @@ ALTER TABLE `credit_card`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
+-- AUTO_INCREMENT for table `customer_details`
+--
+ALTER TABLE `customer_details`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `main_shoes`
 --
 ALTER TABLE `main_shoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `main_shoes_original`
 --
 ALTER TABLE `main_shoes_original`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `personal_info`
@@ -569,7 +513,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `product_sales`
 --
 ALTER TABLE `product_sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `selled_product`

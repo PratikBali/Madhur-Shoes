@@ -51,23 +51,68 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 $total_today_user = $result['total_today_user'] ?? 0; // Default to 0 if no records found
 
 
+
+
 try {
+    $date_today7 = date('d-M-y');
     $date_today = date('Y-m-d');
 
-    // Prepare the statement with a placeholder
-    $stmt = $conn->prepare("SELECT * FROM product_sales 
-                          WHERE DATE(created_at) = :today
-                          ");
+    // Fetch customer and related product data
+    $stmt = $conn->prepare("
+            SELECT 
+                cd.product_bill_no AS cd_product_bill_no,
+                cd.customer_name AS cd_customer_name,
+                cd.phone_number AS cd_phone_number,
+                cd.grand_total AS cd_grand_total,
+                ps.bar_code_no AS ps_bar_code_no,
+                ps.category AS ps_category,
+                ps.brand_name AS ps_brand_name,
+                ps.artical_no AS ps_artical_no,
+                ps.product_color AS ps_product_color,
+                ps.product_size AS ps_product_size,
+                ps.original_price AS ps_original_price,
+                ps.quantity AS ps_quantity,
+                ps.discount AS ps_discount,
+                ps.sell_price AS ps_sell_price
+            FROM customer_details cd
+            INNER JOIN product_sales ps 
+            ON cd.product_bill_no = ps.product_bill_no
+            WHERE DATE(cd.sale_date) = :today
+            ORDER BY cd.product_bill_no
+        ");
 
-    // Bind the parameter
+    // Bind and execute
     $stmt->bindParam(':today', $date_today, PDO::PARAM_STR);
-
-    // Execute the query
     $stmt->execute();
 
-    // Fetch all rows as an associative array
-    $shoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $totalDoneThisMonth = count($shoes);
+    // Group data by product_bill_no
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $groupedData = [];
+    foreach ($results as $row) {
+        $billNo = $row['cd_product_bill_no'];
+        if (!isset($groupedData[$billNo])) {
+            $groupedData[$billNo] = [
+                'customer_details' => [
+                    'customer_name' => $row['cd_customer_name'],
+                    'phone_number' => $row['cd_phone_number'],
+                    'grand_total' => $row['cd_grand_total'],
+                ],
+                'products' => []
+            ];
+        }
+        $groupedData[$billNo]['products'][] = [
+            'bar_code_no' => $row['ps_bar_code_no'],
+            'category' => $row['ps_category'],
+            'brand_name' => $row['ps_brand_name'],
+            'artical_no' => $row['ps_artical_no'],
+            'product_color' => $row['ps_product_color'],
+            'product_size' => $row['ps_product_size'],
+            'original_price' => $row['ps_original_price'],
+            'quantity' => $row['ps_quantity'],
+            'discount' => $row['ps_discount'],
+            'sell_price' => $row['ps_sell_price'],
+        ];
+    }
 } catch (PDOException $e) {
     echo "Query failed: " . $e->getMessage();
 }
@@ -116,6 +161,31 @@ try {
             /* Bold text */
             border: 1px solid red;
             /* Optional green border */
+        }
+
+
+
+        /* For main and nested tables */
+        .table-bordered {
+            border: 1px solid black;
+            border-collapse: collapse;
+            /* Removes double borders */
+        }
+
+        /* For table headers and cells */
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid black;
+            /* Ensures a single black border */
+            padding: 8px;
+            /* Optional: Adjust padding for better readability */
+            text-align: center;
+            /* Centers the text */
+        }
+
+        /* Remove default table styling if needed */
+        table {
+            width: 100%;
         }
     </style>
 </head>
@@ -185,7 +255,7 @@ try {
                                     <h6>Products</h6>
                                     <p class="text-sm mb-0">
                                         <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                        Today Sales
+                                        <?php echo $date_today7; ?> Total Sales
                                         <span class="font-weight-bold ms-1">
                                             <span class="circle"><?php echo $total_today_user; ?></span>
                                         </span>
@@ -213,71 +283,64 @@ try {
 
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
+                                <table class="table-bordered">
+                                    <thead style="color: #FF0080;">
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Date</th>
+                                            <th>Bill No</th>
                                             <th>Customer Name</th>
-                                            <th>Product Name</th>
-                                            <th>Product Category</th>
-                                            <th>Color</th>
-                                            <th>Size</th>
-                                            <th>Original Price</th>
-                                            <th>Set Price</th>
-                                            <th>Quantity</th>
-                                            <th>Final Price</th>
-                                            <th>Discount (%)</th>
-                                            <th>Selling Price</th>
+                                            <th>Phone No</th>
+                                            <th>Grand Total</th>
+                                            <th>Product Details</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <?php $serialNo = 1; ?>
-                                        <?php foreach ($shoes as $shoe): ?>
+                                    <tbody style="color: black;">
+                                        <?php foreach ($groupedData as $billNo => $data): ?>
                                             <tr>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['product_id']); ?></span>
+                                                <td class="text-center">
+                                                    <?php echo htmlspecialchars($billNo); ?>
                                                 </td>
-                                                <td class="font-weight-bold text-center">
-                                                    <span class="my-2 text-xs">
-                                                        <?php
-                                                        $date = new DateTime($shoe['created_at']);
-                                                        echo htmlspecialchars($date->format('F, d, Y h:i A'));
-                                                        ?>
-                                                    </span>
+                                                <td class="text-center">
+                                                    <?php echo htmlspecialchars($data['customer_details']['customer_name']); ?>
                                                 </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['customer_name']); ?></span>
+                                                <td class="text-center">
+                                                    <?php echo htmlspecialchars($data['customer_details']['phone_number']); ?>
                                                 </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['product_name']); ?></span>
+                                                <td class="text-center">
+                                                    <?php echo htmlspecialchars($data['customer_details']['grand_total']); ?> ₹
                                                 </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['category']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['color']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['size']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['original_price']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['price']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['quantity']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['total_price']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['discount']); ?></span>
-                                                </td>
-                                                <td class="text-xs font-weight-bold text-center">
-                                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['sell_price']); ?></span>
+                                                <td>
+                                                    <table class="table-bordered">
+                                                        <thead style="color: #7928CA;">
+                                                            <tr>
+                                                                <th>Bar Code No</th>
+                                                                <th>Category</th>
+                                                                <th>Brand</th>
+                                                                <th>Article No</th>
+                                                                <th>Color</th>
+                                                                <th>Size</th>
+                                                                <th>Price</th>
+                                                                <th>Quantity</th>
+                                                                <th>Discount (%)</th>
+                                                                <th>Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <?php foreach ($data['products'] as $product): ?>
+                                                                <tr>
+                                                                    <td><?php echo htmlspecialchars($product['bar_code_no']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['category']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['brand_name']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['artical_no']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['product_color']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['product_size']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['original_price']); ?> ₹</td>
+                                                                    <td><?php echo htmlspecialchars($product['quantity']); ?></td>
+                                                                    <td><?php echo htmlspecialchars($product['discount']); ?>%</td>
+                                                                    <td><?php echo htmlspecialchars($product['sell_price']); ?> ₹</td>
+                                                                </tr>
+                                                            <?php endforeach; ?>
+                                                        </tbody>
+                                                    </table>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -287,9 +350,7 @@ try {
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </main>
 

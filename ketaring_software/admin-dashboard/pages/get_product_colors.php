@@ -15,7 +15,7 @@ if (isset($_POST['category']) && isset($_POST['product_name']) ) {
     // Query to fetch colors and product price
     $color_query = "
         SELECT product_color, product_id 
-        FROM main_shoes 
+        FROM main_shoes_original 
         WHERE product_name = '$product_name' 
         AND category = '$category'";
     

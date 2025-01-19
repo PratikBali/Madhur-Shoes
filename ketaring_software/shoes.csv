@@ -1,0 +1,9 @@
+Product Id,Barcode No,Category,Male Category,Female Category,Child Male Category,Child Female Category,Other Category,Artical No,Brand Name,Product Color,Quantity,Product Size,Original Price,Sell Price
+1,1234567896,male,Boots,0,0,0,0,A123,Nike,Red,50,10,2000,1500
+2,2345678907,female,0,Sandals,0,0,0,A124,Adidas,Blue,30,9,2500,1900
+3,3456789018,child male,0,0,Baby Shoes,0,0,A125,Puma,Black,70,7,1500,1200
+4,4567890129,child female,0,0,0,Kids Sandals,0,A126,Reebok,White,40,8,2200,1700
+5,5678901235,other,0,0,0,0,Sneakers,A127,Under Armour,Grey,60,14,3000,2500
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,, ,

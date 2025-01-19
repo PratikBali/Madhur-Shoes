@@ -34,7 +34,6 @@ $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 $total_products = $result['total_products'] ?? 0; // Default to 0 if no records found
 
-
 $date_today1 = date('Y-m-d'); // Get today's date
 
 $query1 = "SELECT count(product_id) AS total_today_product 
@@ -47,7 +46,6 @@ $stmt->bindParam(':today', $date_today1, PDO::PARAM_STR);
 $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 $total_today_product = $result['total_today_product'] ?? 0; // Default to 0 if no records found
-
 
 
 $query2 = "SELECT count(product_id) AS total_user 
@@ -244,116 +242,6 @@ $sales_data_json = json_encode($monthly_sales);
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="row my-4">
-          <div class="col-lg-12 col-md-6 mb-md-0 mb-4">
-            <div class="card">
-              <div class="card-header pb-0">
-                <div class="row">
-                  <div class="col-lg-6 col-7">
-                    <h6>Products</h6>
-                      <p class="text-sm mb-0">
-                        <i class="fa fa-check text-info" aria-hidden="true"></i>
-                        Today Sales
-                        <span class="font-weight-bold ms-1">
-                          <span class="circle"><?php echo $total_today_product; ?></span>
-                        </span>
-                      </p>
-                  </div>
-                  <div class="col-lg-6 col-5 my-auto text-end">
-                    <div class="dropdown d-inline float-lg-end pe-4">
-                      <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-ellipsis-v text-secondary"></i>
-                      </a>
-                      <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" data-popper-placement="left-start">
-                        <li><a class="dropdown-item border-radius-md filter-item" data-filter="Paid" href="javascript:;">Status: Paid</a></li>
-                        <li><a class="dropdown-item border-radius-md filter-item" data-filter="Refunded" href="javascript:;">Status: Refunded</a></li>
-                        <li><a class="dropdown-item border-radius-md filter-item" data-filter="In Process" href="javascript:;">Status: In Process</a></li>
-                        <li><a class="dropdown-item border-radius-md filter-item" data-filter="Canceled" href="javascript:;">Status: Canceled</a></li>
-                        <li>
-                          <hr class="horizontal dark my-2">
-                        </li>
-                        <li><a class="dropdown-item border-radius-md text-danger remove-filter" href="javascript:;">Remove Filter</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="card-body px-0 pb-2">
-                <div class="table-responsive">
-                  <table class="table align-items-center mb-0">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Customer Name</th>
-                        <th>Product Name</th>
-                        <th>Color</th>
-                        <th>Size</th>
-                        <th>Original Price</th>
-                        <th>Set Price</th>
-                        <th>Quantity</th>
-                        <th>Final Price</th>
-                        <th>Discount (%)</th>
-                        <th>Selling Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        <?php $serialNo = 1; ?>
-                        <?php foreach ($shoes as $shoe): ?>
-                            <tr>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['product_id']); ?></span>
-                                </td>
-                                <td class="font-weight-bold text-center">
-                                    <span class="my-2 text-xs">
-                                        <?php
-                                        $date = new DateTime($shoe['created_at']);
-                                        echo htmlspecialchars($date->format('F, d, Y h:i A'));
-                                        ?>
-                                    </span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['customer_name']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['product_name']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['color']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['size']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['original_price']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['price']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['quantity']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['total_price']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['discount']); ?></span>
-                                </td>
-                                <td class="text-xs font-weight-bold text-center">
-                                    <span class="my-2 text-xs"><?php echo htmlspecialchars($shoe['sell_price']); ?></span>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
         </div>
 
         <div class="row mt-4">

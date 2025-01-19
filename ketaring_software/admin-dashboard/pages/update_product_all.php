@@ -61,6 +61,30 @@ try {
   <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <style>
+    /* For main and nested tables */
+    .table-bordered {
+            border: 1px solid black;
+            border-collapse: collapse;
+            /* Removes double borders */
+        }
+
+        /* For table headers and cells */
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid black;
+            /* Ensures a single black border */
+            padding: 8px;
+            /* Optional: Adjust padding for better readability */
+            text-align: center;
+            /* Centers the text */
+        }
+
+        /* Remove default table styling if needed */
+        table {
+            width: 100%;
+        }
+  </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -151,53 +175,46 @@ try {
             </div>
             <div class="card-body px-0 pb-2">
               <div class="table-responsive">
-                <table class="table align-items-center mb-0">
-                  <thead>
+              <table class="table-bordered">
+                  <thead style="color: #FF0080;">
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">S.No.</h6></th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">Product ID</h6></th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">Product Name</h6></th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">Color</h6></th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">Quantity</h6></th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">Category</h6></th>     
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><h6 style="color:#cf2aab">Operation</h6></th>
+                      <th>Action</th>
+                      <th>Bar Code No</th>
+                      <th>Category</th>
+                      <th>Brand</th>
+                      <th>Article No</th>
+                      <th>Color</th>
+                      <th>Size</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <?php $serialNo = 1;?>
+                  <tbody style="color: black;">
+                    <?php $serialNo = 1; ?>
                     <?php foreach ($shoes as $shoe): ?>
-                      <tr> 
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-xs font-weight-bold"><?php echo $serialNo++;?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-xs font-weight-bold"><?php echo htmlspecialchars($shoe['product_id']); ?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-xs font-weight-bold"><?php echo htmlspecialchars($shoe['product_name']); ?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-xs font-weight-bold"><?php echo htmlspecialchars($shoe['product_color']); ?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-xs font-weight-bold"><?php echo htmlspecialchars($shoe['quantity']); ?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                          <span class="text-xs font-weight-bold"><?php echo htmlspecialchars($shoe['category']); ?></span>
-                        </td>
-                        <td class="align-middle text-center text-sm">
-                        
-                          <a class="btn bg-gradient-primary mt-3 w-100" href="../../address/update_product.php?product_color=<?php echo htmlspecialchars($shoe['product_color']); ?>&product_name=<?php echo htmlspecialchars($shoe['product_name']); ?>&product_id=<?php echo htmlspecialchars($shoe['product_id']); ?>">
+                      <tr>
+                        <td>
+
+                          <a class="btn bg-gradient-primary mt-3 w-100" href="../../address/update_product.php?bar_code_no=<?php echo htmlspecialchars($shoe['bar_code_no']); ?>">
                             <span class="text-xs font-weight-bold">Edit Info</span>
                           </a>
-                        <br>
-                          <a class="btn bg-gradient-dark mt-3 w-100" href="../../address/update_product_image.php?product_color=<?php echo htmlspecialchars($shoe['product_color']); ?>&product_name=<?php echo htmlspecialchars($shoe['product_name']); ?>&product_id=<?php echo htmlspecialchars($shoe['product_id']); ?>">
+                          <br>
+                          <a class="btn bg-gradient-dark mt-3 w-100" href="../../address/update_product_image.php?bar_code_no=<?php echo htmlspecialchars($shoe['bar_code_no']); ?>">
                             <span class="text-xs font-weight-bold">Edit Image</span>
                           </a>
-                          
+
                         </td>
-                      </tr>  
-                      <?php endforeach; ?>
+                        <td><?php echo htmlspecialchars($shoe['bar_code_no']); ?></td>
+                        <td><?php echo htmlspecialchars($shoe['category']); ?></td>
+                        <td><?php echo htmlspecialchars($shoe['brand_name']); ?></td>
+                        <td><?php echo htmlspecialchars($shoe['artical_no']); ?></td>
+                        <td><?php echo htmlspecialchars($shoe['product_color']); ?></td>
+                        <td><?php echo htmlspecialchars($shoe['product_size']); ?></td>
+                        <td><?php echo htmlspecialchars($shoe['original_price']); ?> ₹</td>
+                        <td><?php echo htmlspecialchars($shoe['quantity']); ?></td>
+
+                      </tr>
+                    <?php endforeach; ?>
                   </tbody>
                 </table>
               </div>

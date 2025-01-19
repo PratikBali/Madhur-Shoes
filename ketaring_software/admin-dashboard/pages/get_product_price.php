@@ -18,9 +18,9 @@ if (isset($_POST['product_size']) && isset($_POST['product_name']) && isset($_PO
     $original_price_column = $product_size . '_original_price'; // For price
 
     // Check if the columns exist (optional but good practice)
-    $columns_result = $conn->query("SHOW COLUMNS FROM main_shoes LIKE '$size_column'");
-    $price_columns_result = $conn->query("SHOW COLUMNS FROM main_shoes LIKE '$price_column'");
-    $original_price_columns_result = $conn->query("SHOW COLUMNS FROM main_shoes LIKE '$original_price_column'");
+    $columns_result = $conn->query("SHOW COLUMNS FROM main_shoes_original LIKE '$size_column'");
+    $price_columns_result = $conn->query("SHOW COLUMNS FROM main_shoes_original LIKE '$price_column'");
+    $original_price_columns_result = $conn->query("SHOW COLUMNS FROM main_shoes_original LIKE '$original_price_column'");
 
     if ($columns_result->num_rows === 0 || $price_columns_result->num_rows === 0 || $original_price_columns_result->num_rows === 0) {
         echo "Error: Invalid size selected.";
@@ -28,7 +28,7 @@ if (isset($_POST['product_size']) && isset($_POST['product_name']) && isset($_PO
     }
 
     // Query the price and available quantity
-    $stmt = $conn->prepare("SELECT $original_price_column AS original_price, $price_column AS price, $size_column AS available_quantity FROM main_shoes WHERE product_name = ? AND product_color = ?");
+    $stmt = $conn->prepare("SELECT $original_price_column AS original_price, $price_column AS price, $size_column AS available_quantity FROM main_shoes_original WHERE product_name = ? AND product_color = ?");
     $stmt->bind_param('ss', $product_name, $product_color);
 
     if ($stmt->execute()) {

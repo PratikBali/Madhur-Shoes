@@ -1,11 +1,53 @@
 <?php
 session_start();
 require 'db.php';
+require '../conf/db.php';
 
 if (!isset($_SESSION['admin'])) {
     header("Location: ../login.php");
     exit();
 }
+ 
+error_reporting(E_ALL);
+ini_set('display_errors', 1); 
+
+// Function to generate a unique numerical barcode
+function generateUniqueBarcode($conn) {
+    do {
+        // Generate a random 13-digit numerical barcode
+        $bar_code_no = str_pad(rand(0, 9999999999999), 13, '0', STR_PAD_LEFT); // Ensures it's 13 digits
+
+        // Check if the barcode exists in the database
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM main_shoes WHERE bar_code_no = ?");
+        $stmt->execute([$bar_code_no]);
+        $count = $stmt->fetchColumn();
+
+    } while ($count > 0); // Repeat if barcode already exists
+
+    return $bar_code_no;
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get the barcode from the form
+    $bar_code_no = $_POST['bar_code_no'] ?? '';
+
+    // If no barcode is entered, generate one dynamically
+    if (empty($bar_code_no)) {
+        $bar_code_no = generateUniqueBarcode($conn);
+    } else {
+        // Check if manually entered barcode already exists
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM main_shoes_original WHERE bar_code_no = ?");
+        $stmt->execute([$bar_code_no]);
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            die("Error: The entered barcode already exists in the database.");
+        }
+    }
+
+}
+
 
 // Auto-generate product_id
 if (isset($pdo)) {
@@ -32,46 +74,23 @@ if (isset($pdo)) {
 }
 
 // Retrieve form data
-$product_seller_name = $_POST['product_seller_name'] ?? '';
-$product_name = $_POST['product_name'] ?? '';
+$product_seller_email_id = $_POST['product_seller_email_id'] ?? '';
+$brand_name = $_POST['brand_name'] ?? '';
 $product_color = $_POST['product_color'] ?? '';
 $category = $_POST['category'] ?? '';
-$sizes = [
-    1 => $_POST['1'] ?? 0,
-    2 => $_POST['2'] ?? 0,
-    3 => $_POST['3'] ?? 0,
-    4 => $_POST['4'] ?? 0,
-    5 => $_POST['5'] ?? 0,
-    6 => $_POST['6'] ?? 0,
-    7 => $_POST['7'] ?? 0,
-    8 => $_POST['8'] ?? 0,
-    9 => $_POST['9'] ?? 0,
-    10 => $_POST['10'] ?? 0,
-];
 
-$size_1_original_price = $_POST['size_1_original_price'] ?? '';
-$size_2_original_price = $_POST['size_2_original_price'] ?? '';
-$size_3_original_price = $_POST['size_3_original_price'] ?? '';
-$size_4_original_price = $_POST['size_4_original_price'] ?? '';
-$size_5_original_price = $_POST['size_5_original_price'] ?? '';
-$size_6_original_price = $_POST['size_6_original_price'] ?? '';
-$size_7_original_price = $_POST['size_7_original_price'] ?? '';
-$size_8_original_price = $_POST['size_8_original_price'] ?? '';
-$size_9_original_price = $_POST['size_9_original_price'] ?? '';
-$size_10_original_price = $_POST['size_10_original_price'] ?? '';
+$male_category = !empty($_POST['male_category']) ? $_POST['male_category'] : null;
+$female_category = !empty($_POST['female_category']) ? $_POST['female_category'] : null;
+$child_male_category = !empty($_POST['child_male_category']) ? $_POST['child_male_category'] : null;
+$child_female_category = !empty($_POST['child_female_category']) ? $_POST['child_female_category'] : null;
+$other_category = !empty($_POST['other_category']) ? $_POST['other_category'] : null;
 
-$size_1_price = $_POST['size_1_price'] ?? '';
-$size_2_price = $_POST['size_2_price'] ?? '';
-$size_3_price = $_POST['size_3_price'] ?? '';
-$size_4_price = $_POST['size_4_price'] ?? '';
-$size_5_price = $_POST['size_5_price'] ?? '';
-$size_6_price = $_POST['size_6_price'] ?? '';
-$size_7_price = $_POST['size_7_price'] ?? '';
-$size_8_price = $_POST['size_8_price'] ?? '';
-$size_9_price = $_POST['size_9_price'] ?? '';
-$size_10_price = $_POST['size_10_price'] ?? '';
+$artical_no = $_POST['artical_no'] ?? '';
 
+$product_size = $_POST['product_size'] ?? 0;
 $quantity = $_POST['quantity'] ?? 0;
+$original_price = $_POST['original_price'] ?? 0;
+$sell_price = $_POST['sell_price'] ?? 0;
 
 // Handle file uploads
 $images = ['side', 'back', 'up', 'bottom'];
@@ -118,56 +137,29 @@ if (isset($pdo)) {
         // Start a transaction
         $pdo->beginTransaction();
 
-        // Insert into main_shoes_original _original
-        $stmt = $pdo->prepare("INSERT INTO main_shoes_original (product_id, product_seller_name, 
-                                product_name, product_color, category,
-                                size_1, size_2, size_3, size_4, size_5, size_6, size_7, size_8, size_9, size_10,
-                                size_1_original_price, size_2_original_price, size_3_original_price, size_4_original_price, 
-                                size_5_original_price, size_6_original_price, size_7_original_price, size_8_original_price, 
-                                size_9_original_price, size_10_original_price,
-                                size_1_price, size_2_price, size_3_price, size_4_price, size_5_price, size_6_price,
-                                size_7_price, size_8_price, size_9_price, size_10_price,
-                                quantity, side, back, up, bottom) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // Insert into main_shoes_original _original product_seller_email_id
+        $stmt = $pdo->prepare("INSERT INTO main_shoes_original (bar_code_no, brand_name, product_id, product_seller_email_id, 
+                                category, male_category, female_category, child_male_category, child_female_category, 
+                                other_category, artical_no, product_color, product_size, quantity, original_price,
+                                sell_price, side, back, up, bottom) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
+            $bar_code_no,
+            $brand_name,
             $product_id,
-            $product_seller_name,
-            $product_name,
-            $product_color,
+            $product_seller_email_id,
             $category,
-            $sizes[1],
-            $sizes[2],
-            $sizes[3],
-            $sizes[4],
-            $sizes[5],
-            $sizes[6],
-            $sizes[7],
-            $sizes[8],
-            $sizes[9],
-            $sizes[10],
-            $size_1_original_price,
-            $size_2_original_price,
-            $size_3_original_price,
-            $size_4_original_price,
-            $size_5_original_price,
-            $size_6_original_price,
-            $size_7_original_price,
-            $size_8_original_price,
-            $size_9_original_price,
-            $size_10_original_price,
-            $size_1_price,
-            $size_2_price,
-            $size_3_price,
-            $size_4_price,
-            $size_5_price,
-            $size_6_price,
-            $size_7_price,
-            $size_8_price,
-            $size_9_price,
-            $size_10_price,
+            $male_category,
+            $female_category,
+            $child_male_category,
+            $child_female_category,
+            $other_category,
+            $artical_no,
+            $product_color,
+            $product_size,
             $quantity,
+            $original_price,
+            $sell_price,
             $uploaded_images['side'] ?? null,
             $uploaded_images['back'] ?? null,
             $uploaded_images['up'] ?? null,
@@ -175,55 +167,28 @@ if (isset($pdo)) {
         ]);
 
         // Insert into main_shoes
-        $stmt = $pdo->prepare("INSERT INTO main_shoes (product_id, product_seller_name, 
-                                product_name, product_color, category,
-                                size_1, size_2, size_3, size_4, size_5, size_6, size_7, size_8, size_9, size_10,
-                                size_1_original_price, size_2_original_price, size_3_original_price, size_4_original_price, 
-                                size_5_original_price, size_6_original_price, size_7_original_price, size_8_original_price, 
-                                size_9_original_price, size_10_original_price,
-                                size_1_price, size_2_price, size_3_price, size_4_price, size_5_price, size_6_price,
-                                size_7_price, size_8_price, size_9_price, size_10_price,
-                                quantity, side, back, up, bottom) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO main_shoes (bar_code_no, brand_name, product_id, product_seller_email_id, 
+                                category, male_category, female_category, child_male_category, child_female_category, 
+                                other_category, artical_no, product_color, product_size, quantity, original_price,
+                                sell_price, side, back, up, bottom) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
+            $bar_code_no,
+            $brand_name,
             $product_id,
-            $product_seller_name,
-            $product_name,
-            $product_color,
+            $product_seller_email_id,
             $category,
-            $sizes[1],
-            $sizes[2],
-            $sizes[3],
-            $sizes[4],
-            $sizes[5],
-            $sizes[6],
-            $sizes[7],
-            $sizes[8],
-            $sizes[9],
-            $sizes[10],
-            $size_1_original_price,
-            $size_2_original_price,
-            $size_3_original_price,
-            $size_4_original_price,
-            $size_5_original_price,
-            $size_6_original_price,
-            $size_7_original_price,
-            $size_8_original_price,
-            $size_9_original_price,
-            $size_10_original_price,
-            $size_1_price,
-            $size_2_price,
-            $size_3_price,
-            $size_4_price,
-            $size_5_price,
-            $size_6_price,
-            $size_7_price,
-            $size_8_price,
-            $size_9_price,
-            $size_10_price,
+            $male_category,
+            $female_category,
+            $child_male_category,
+            $child_female_category,
+            $other_category,
+            $artical_no,
+            $product_color,
+            $product_size,
             $quantity,
+            $original_price,
+            $sell_price,
             $uploaded_images['side'] ?? null,
             $uploaded_images['back'] ?? null,
             $uploaded_images['up'] ?? null,

@@ -59,7 +59,7 @@ if ($admin_details) {
                 <div class="col-lg-12">
                     <div class="card mt-4">
 
-                        <?php include 'add_new_product_sys.php'; ?>
+                        <?php include 'add_new_product_sys copy.php'; ?>
 
                     </div>
                 </div>

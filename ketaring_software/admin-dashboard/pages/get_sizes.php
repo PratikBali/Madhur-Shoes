@@ -12,7 +12,7 @@ if (isset($_POST['product_color'])) {
     $product_color = $conn->real_escape_string($_POST['product_color']);
     
     // Query to fetch size columns where value > 0
-    $size_query = "SELECT size_1, size_2, size_3, size_4, size_5,size_6, size_7, size_8, size_9, size_10 FROM main_shoes WHERE product_color = '$product_color'";
+    $size_query = "SELECT size_1, size_2, size_3, size_4, size_5,size_6, size_7, size_8, size_9, size_10 FROM main_shoes_original WHERE product_color = '$product_color'";
     $size_result = $conn->query($size_query);
 
     echo '<option value="">-- Select Size --</option>';

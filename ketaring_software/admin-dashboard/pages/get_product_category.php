@@ -14,7 +14,7 @@ if (isset($_POST['product_name'])) {
     // Query to fetch category and product price
     $color_query = "
         SELECT category 
-        FROM main_shoes 
+        FROM main_shoes_original 
         WHERE product_name = '$product_name'";
     
     $color_result = $conn->query($color_query);

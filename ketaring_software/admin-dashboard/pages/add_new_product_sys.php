@@ -63,7 +63,7 @@ if (isset($_POST['update_bank_account_info'])) {
 }
 
 // Fetch product names
-$product_query = "SELECT product_name FROM main_shoes";
+$product_query = "SELECT product_name FROM main_shoes_original";
 $product_result = $conn->query($product_query);
 
 $conn->close();
@@ -210,7 +210,6 @@ $conn->close();
     function validateLetters(input) {
         input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
     }
-
 
     // Function to allow only numbers
     function validateNumbers(input) {

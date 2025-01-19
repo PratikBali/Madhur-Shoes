@@ -59,16 +59,14 @@ if (isset($_POST['update_product'])) {
   
 }
 
-$product_color = $_GET['product_color'];
-$product_name = $_GET['product_name'];
+$bar_code_no = $_GET['bar_code_no'];
 
 // Prepare the SQL query to fetch data
-$sql = "SELECT * FROM main_shoes WHERE product_name = :product_name AND product_color = :product_color";
+$sql = "SELECT * FROM main_shoes WHERE bar_code_no = :bar_code_no";
 $stmt = $conn->prepare($sql);
 
 // Bind the parameters using PDO syntax
-$stmt->bindParam(':product_name', $product_name);
-$stmt->bindParam(':product_color', $product_color);
+$stmt->bindParam(':bar_code_no', $bar_code_no);
 
 // Execute the query
 $stmt->execute();
@@ -212,10 +210,26 @@ if (!empty($shoes_data)) {
                             <div class="row mt-3">
 
                               <div class="col-12 col-sm-6">
-                              <input type="hidden" name="id" value="<?php echo $shoe['id']; ?>"">
+                                <input type="hidden" name="id" value="<?php echo $shoe['id']; ?>"">
                                 <div class="input-group input-group-dynamic">
-                                  <label class="form-label">Product Name</label>
-                                  <input value="<?php echo htmlspecialchars($shoe['product_name']); ?>" class="multisteps-form__input form-control" type="text" readonly />
+                                  <label class="form-label">Product Barcode</label>
+                                  <input value="<?php echo htmlspecialchars($shoe['bar_code_no']); ?>" class="multisteps-form__input form-control" type="text" readonly />
+                                </div>
+                              </div>
+                              <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                <div class="input-group input-group-dynamic">
+                                  <label class="form-label">Product Brand Name</label>
+                                  <input value="<?php echo htmlspecialchars($shoe['brand_name']); ?>" class="multisteps-form__input form-control" type="text" readonly />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+
+                              <div class="col-12 col-sm-6">
+                                <div class="input-group input-group-dynamic">
+                                  <label class="form-label">Artical No</label>
+                                  <input value="<?php echo htmlspecialchars($shoe['artical_no']); ?>" class="multisteps-form__input form-control" type="text" readonly />
                                 </div>
                               </div>
                               <div class="col-12 col-sm-6 mt-3 mt-sm-0">
