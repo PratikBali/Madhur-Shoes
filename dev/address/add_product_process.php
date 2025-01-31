@@ -141,8 +141,8 @@ if (isset($pdo)) {
         $stmt = $pdo->prepare("INSERT INTO main_shoes_original (bar_code_no, brand_name, product_id, product_seller_email_id, 
                                 category, male_category, female_category, child_male_category, child_female_category, 
                                 other_category, artical_no, product_color, product_size, quantity, original_price,
-                                sell_price, side, back, up, bottom) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                sell_price, side) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $bar_code_no,
             $brand_name,
@@ -160,18 +160,15 @@ if (isset($pdo)) {
             $quantity,
             $original_price,
             $sell_price,
-            $uploaded_images['side'] ?? null,
-            $uploaded_images['back'] ?? null,
-            $uploaded_images['up'] ?? null,
-            $uploaded_images['bottom'] ?? null
+            $uploaded_images['side'] ?? null
         ]);
 
         // Insert into main_shoes
         $stmt = $pdo->prepare("INSERT INTO main_shoes (bar_code_no, brand_name, product_id, product_seller_email_id, 
                                 category, male_category, female_category, child_male_category, child_female_category, 
                                 other_category, artical_no, product_color, product_size, quantity, original_price,
-                                sell_price, side, back, up, bottom) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                sell_price, side) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $bar_code_no,
             $brand_name,
@@ -189,10 +186,7 @@ if (isset($pdo)) {
             $quantity,
             $original_price,
             $sell_price,
-            $uploaded_images['side'] ?? null,
-            $uploaded_images['back'] ?? null,
-            $uploaded_images['up'] ?? null,
-            $uploaded_images['bottom'] ?? null
+            $uploaded_images['side'] ?? null
         ]);
 
         // Commit the transaction

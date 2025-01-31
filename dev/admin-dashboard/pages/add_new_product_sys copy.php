@@ -62,6 +62,30 @@ mysqli_close($conn);
   <title>Shoes</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* For main and nested tables */
+    .table-bordered {
+      border: 1px solid black;
+      border-collapse: collapse;
+      /* Removes double borders */
+    }
+
+    /* For table headers and cells */
+    .table-bordered th,
+    .table-bordered td {
+      border: 1px solid black;
+      /* Ensures a single black border */
+      padding: 8px;
+      /* Optional: Adjust padding for better readability */
+      text-align: center;
+      /* Centers the text */
+    }
+
+    /* Remove default table styling if needed */
+    table {
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
@@ -160,37 +184,38 @@ mysqli_close($conn);
     </form>
     <form method="POST" action="" enctype="multipart/form-data">
       <div class="mt-4">
-        <table class="table table-bordered" id="product_table">
-          <thead>
+        <table class="table-bordered" id="product_table">
+          <thead style="color: #FF0080;">
             <tr>
               <th>Bar Code No</th>
-              <th>Category</th>
-              <th>Brand</th>
+              <!--th>Category</th-->
+              <!--th>Brand</th-->
               <th>Article No</th>
-              <th>Color</th>
+              <!--th>Color</th-->
               <th>Size</th>
               <th>Price</th>
-              <th>aval Quantity</th>
+              <!--th>aval Quantity</th-->
               <th>Quantity</th>
               <th>Discount</th>
               <th>Total</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style="color: black;">
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="9" class="text-right"><strong>Grand Total:</strong></td>
+              <td colspan="6" class="text-right"><strong>Grand Total:</strong></td>
               <td>
-                <input type="text" name="grand_total" id="grand_total" readonly> ₹
+                <input type="hidden" name="grand_total" id="grand_total" readonly>
+                <span id="grand_total_display"></span>
               </td>
               <td></td>
             </tr>
           </tfoot>
         </table>
       </div>
-      <div class="row d-flex justify-content-center text-center">
+      <div class="row d-flex justify-content-center text-center" style="margin-top: 20px;">
         <div class="col-md-3">
           <label>Customer Name</label>
           <input name="customer_name" class="form-control" type="text" oninput="validateLetters(this)" required>
@@ -207,6 +232,7 @@ mysqli_close($conn);
       </div>
     </form>
   </div>
+
   <script>
     // Function to allow only letters
     function validateLetters(input) {
@@ -215,7 +241,13 @@ mysqli_close($conn);
 
     // Function to allow only numbers
     function validateNumbers(input) {
-      input.value = input.value.replace(/[^0-9]/g, '').substring(0, 10);
+      var numericValue = input.value.replace(/[^0-9]/g, '');
+      if (numericValue.length <= 10) {
+        // Update the input value with the cleaned numeric value
+        input.value = numericValue;
+      } else {
+        input.value = numericValue.slice(0, 10);
+      }
     }
 
     $('#reset_form').click(function() {
@@ -355,23 +387,27 @@ mysqli_close($conn);
           }
           $('#product_table tbody').append(`
                         <tr>
-                            <td><input type="text" name="bar_code_no[]" value="${barCode}" required></td>
-                            <td><input type="text" name="category[]" value="${category}" required></td>
-                            <td><input type="text" name="brand_name[]" value="${brand}" required></td>
-                            <td><input type="text" name="artical_no[]" value="${artical}" required></td>
-                            <td><input type="text" name="product_color[]" value="${color}" required></td>
-                            <td><input type="text" name="product_size[]" value="${size}" required></td>
-                            <td><input type="text" name="original_price[]" value="${price}" required></td>
-                            <td><input type="text" name="aval_quantity[]" value="${aval_quantity}" required></td>
-                            <td><input type="text" name="quantity[]" value="${quantity}" required></td>
-                            <td><input type="text" name="discount[]" value="${discount}%" required></td>
-                            <td><input type="text" name="sell_price[]" value="${total}" required></td>
+                            
+                            <input type="hidden" name="category[]" value="${category}" required readonly>
+                            <input type="hidden" name="brand_name[]" value="${brand}" required readonly>
+                            <input type="hidden" name="product_color[]" value="${color}" required readonly>
+                            <input type="hidden" name="aval_quantity[]" value="${aval_quantity}" required readonly>
+
+                            <td>${barCode}<input type="hidden" name="bar_code_no[]" value="${barCode}" required readonly></td>
+                            <td>${artical}<input type="hidden" name="artical_no[]" value="${artical}" required readonly></td>
+                            <td>${size}<input type="hidden" name="product_size[]" value="${size}" required readonly></td>
+                            <td>${price}<input type="hidden" name="original_price[]" value="${price}" required readonly></td>
+                            <td>${quantity}<input type="hidden" name="quantity[]" value="${quantity}" required readonly></td>
+                            <td>${discount}%<input type="hidden" name="discount[]" value="${discount}%" required readonly></td>
+                            <td>${total}<input type="hidden" name="sell_price[]" value="${total}" required readonly></td>
                             <td><button type="button" class="btn btn-danger btn-sm remove_product">Remove</button></td>
                         </tr>
                     `);
           grandTotal += numericTotal;
+          $('#grand_total_display').text(grandTotal.toFixed(2));
           $('#grand_total').val(grandTotal.toFixed(2));
           $('#reset_form').click();
+
         } else {
           alert('Please select a product and calculate the total price.');
         }
