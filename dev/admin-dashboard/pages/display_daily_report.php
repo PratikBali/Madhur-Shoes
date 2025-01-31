@@ -65,6 +65,7 @@ try {
                 cd.phone_number AS cd_phone_number,
                 cd.grand_total AS cd_grand_total,
                 ps.bar_code_no AS ps_bar_code_no,
+                ps.product_bill_no As ps_product_bill_no,
                 ps.category AS ps_category,
                 ps.brand_name AS ps_brand_name,
                 ps.artical_no AS ps_artical_no,
@@ -101,6 +102,7 @@ try {
             ];
         }
         $groupedData[$billNo]['products'][] = [
+            'product_bill_no' => $row['ps_product_bill_no'],
             'bar_code_no' => $row['ps_bar_code_no'],
             'category' => $row['ps_category'],
             'brand_name' => $row['ps_brand_name'],
@@ -261,29 +263,15 @@ try {
                                         </span>
                                     </p>
                                 </div>
-                                <div class="col-lg-6 col-5 my-auto text-end">
-                                    <div class="dropdown d-inline float-lg-end pe-4">
-                                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-v text-secondary"></i>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" data-popper-placement="left-start">
-                                            <li><a class="dropdown-item border-radius-md filter-item" data-filter="Paid" href="javascript:;">Status: Paid</a></li>
-                                            <li><a class="dropdown-item border-radius-md filter-item" data-filter="Refunded" href="javascript:;">Status: Refunded</a></li>
-                                            <li><a class="dropdown-item border-radius-md filter-item" data-filter="In Process" href="javascript:;">Status: In Process</a></li>
-                                            <li><a class="dropdown-item border-radius-md filter-item" data-filter="Canceled" href="javascript:;">Status: Canceled</a></li>
-                                            <li>
-                                                <hr class="horizontal dark my-2">
-                                            </li>
-                                            <li><a class="dropdown-item border-radius-md text-danger remove-filter" href="javascript:;">Remove Filter</a></li>
-                                        </ul>
-                                    </div>
+                                <div style="text-align: right; margin-bottom: 10px;">
+                                    <input style="color: #FF0080;" type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for Bill No...">
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive">
-                                <table class="table-bordered">
+                                <table class="table-bordered" id="recordTable">
                                     <thead style="color: #FF0080;">
                                         <tr>
                                             <th>Bill No</th>
@@ -312,6 +300,7 @@ try {
                                                     <table class="table-bordered">
                                                         <thead style="color: #7928CA;">
                                                             <tr>
+                                                                <th>Bill No</th>
                                                                 <th>Bar Code No</th>
                                                                 <th>Category</th>
                                                                 <th>Brand</th>
@@ -327,6 +316,7 @@ try {
                                                         <tbody>
                                                             <?php foreach ($data['products'] as $product): ?>
                                                                 <tr>
+                                                                    <td><?php echo htmlspecialchars($product['product_bill_no']); ?></td>
                                                                     <td><?php echo htmlspecialchars($product['bar_code_no']); ?></td>
                                                                     <td><?php echo htmlspecialchars($product['category']); ?></td>
                                                                     <td><?php echo htmlspecialchars($product['brand_name']); ?></td>
@@ -353,6 +343,57 @@ try {
             </div>
         </div>
     </main>
+    <script>
+        function searchTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toUpperCase();
+            var table = document.getElementById("recordTable");
+            var rows = table.getElementsByTagName("tr");
+
+            // Loop through all table rows (skip the header row)
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                var cells = row.getElementsByTagName("td");
+                var match = false;
+
+                // Check the outer table columns (Bill No, Customer Name, Phone No, Grand Total)
+                for (var j = 0; j < cells.length - 1; j++) { // Exclude last column (Product Details)
+                    var cell = cells[j];
+                    var textValue = cell.textContent || cell.innerText;
+                    if (textValue.toUpperCase().indexOf(filter) > -1) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                // Check the Product Details column (if it contains a nested table)
+                if (!match && cells[cells.length - 1]) {
+                    var nestedTable = cells[cells.length - 1].querySelector('table');
+                    if (nestedTable) {
+                        var nestedRows = nestedTable.getElementsByTagName('tr');
+                        for (var k = 1; k < nestedRows.length; k++) { // Skip nested table header row
+                            var nestedCells = nestedRows[k].getElementsByTagName('td');
+                            for (var l = 0; l < nestedCells.length; l++) {
+                                var nestedText = nestedCells[l].textContent || nestedCells[l].innerText;
+                                if (nestedText.toUpperCase().indexOf(filter) > -1) {
+                                    match = true;
+                                    break;
+                                }
+                            }
+                            if (match) break;
+                        }
+                    }
+                }
+
+                // Show or hide the row based on the match
+                if (match) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+    </script>
 
     <!--   Core JS Files   -->
     <script src="../assets/js/core/popper.min.js"></script>
@@ -360,137 +401,6 @@ try {
     <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/chartjs.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let currentFilter = ''; // Variable to store current filter status
-            const filterItems = document.querySelectorAll('.filter-item');
-            const removeFilter = document.querySelector('.remove-filter');
-            const rows = Array.from(document.querySelectorAll('tbody tr'));
-
-            // Apply filter
-            filterItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    currentFilter = this.getAttribute('data-filter');
-                    rows.forEach(row => {
-                        const statusCell = row.querySelector('td:nth-child(3)').textContent.trim();
-                        if (statusCell === currentFilter || currentFilter === 'Remove Filter') {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
-            });
-
-            // Remove filter
-            removeFilter.addEventListener('click', function() {
-                currentFilter = ''; // Clear filter status
-                rows.forEach(row => {
-                    row.style.display = '';
-                });
-            });
-        });
-    </script>
-
-    <script>
-        var ctx = document.getElementById("chart-canvas").getContext("2d");
-        var chart; // Declare chart variable
-
-        function renderChart(type) {
-            // Clear the previous chart if it exists in this part
-            if (chart) {
-                chart.destroy();
-            }
-
-            var monthColors = [
-                "#FF0000", "#0000FF", "#FFFF00", "#7FFF00", "#00FF00",
-                "#00FF7F", "#00FFFF", "#FF7F00", "#007FFF", "#7F00FF",
-                "#FF00FF", "#FF007F", "#ASR43E", "#RAS1907",
-            ];
-
-            var chartData = {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Sales",
-                    data: <?php echo $sales_data_json; ?>,
-                    borderColor: type === "line" ? "#cb0c9f" : monthColors, // Color for line or month colors
-                    backgroundColor: type === "line" ? "rgba(203,12,159,0.2)" : monthColors, // Optional fill
-                    borderWidth: type === "line" ? 3 : 0,
-                    fill: type === "line",
-                    maxBarThickness: 8
-                }]
-            };
-
-            var chartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-            };
-
-            // Specific option to hide axes only for Pie Chart 
-            if (type === "pie") {
-                chartOptions = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        x: {
-                            display: false
-                        },
-                        y: {
-                            display: false
-                        }
-                    }
-                };
-            } else {
-                chartOptions.scales = {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            drawBorder: false,
-                            display: true
-                        },
-                        ticks: {
-                            color: "#fff"
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: "white"
-                        }
-                    }
-                };
-            }
-
-            // Create the chart with the selected type
-            chart = new Chart(ctx, {
-                type: type,
-                data: chartData,
-                options: chartOptions
-            });
-        }
-
-        // Initial chart render
-        renderChart(document.getElementById("chartType").value);
-
-        // Event listener for select dropdown
-        document.getElementById("chartType").addEventListener("change", function() {
-            renderChart(this.value);
-        });
-    </script>
 
     <script>
         var win = navigator.platform.indexOf('Win') > -1;

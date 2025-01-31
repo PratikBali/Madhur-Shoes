@@ -325,32 +325,32 @@ if ($admin_details) {
                               <div class="input-group input-group-dynamic">
                                 <div class="drag-input" id="drag-input-1">
                                   <p>Drag Side Image Here</p>
-                                  <input name="side" type="file" accept="image/*" onchange="previewImage(this, 1)" required>
+                                  <input name="side" type="file" accept="image/*" capture="environment" onchange="previewImage(this, 1)" required>
                                   <img id="preview-1" src="" alt="Preview 1" style="display:none;" />
                                 </div>
                               </div>
                             </div>
 
-                            <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                            <!--div class="col-12 col-sm-6 mt-3 mt-sm-0">
                               <label class="form-label">Back Image</label>
                               <div class="input-group input-group-dynamic">
                                 <div class="drag-input" id="drag-input-2">
                                   <p>Drag Back Image Here</p>
-                                  <input name="back" type="file" accept="image/*" onchange="previewImage(this, 2)" required>
+                                  <input name="back" type="file" accept="image/*" capture="environment" onchange="previewImage(this, 2)" required>
                                   <img id="preview-2" src="" alt="Preview 2" style="display:none;" />
                                 </div>
                               </div>
-                            </div>
+                            </div-->
 
                           </div>
 
-                          <div class="row mt-3">
+                          <!--div class="row mt-3">
                             <div class="col-12 col-sm-6">
                               <label class="form-label">Up Image</label>
                               <div class="input-group input-group-dynamic">
                                 <div class="drag-input" id="drag-input-3">
                                   <p>Drag Up Image Here</p>
-                                  <input name="up" type="file" accept="image/*" onchange="previewImage(this, 3)" required>
+                                  <input name="up" type="file" accept="image/*" capture="environment" onchange="previewImage(this, 3)" required>
                                   <img id="preview-3" src="" alt="Preview 3" style="display:none;" />
                                 </div>
                               </div>
@@ -361,13 +361,13 @@ if ($admin_details) {
                               <div class="input-group input-group-dynamic">
                                 <div class="drag-input" id="drag-input-4">
                                   <p>Drag Bottom Image Here</p>
-                                  <input name="bottom" type="file" accept="image/*" onchange="previewImage(this, 4)" required>
+                                  <input name="bottom" type="file" accept="image/*" capture="environment" onchange="previewImage(this, 4)" required>
                                   <img id="preview-4" src="" alt="Preview 4" style="display:none;" />
                                 </div>
                               </div>
                             </div>
 
-                          </div>
+                          </div-->
 
                           <div class="row">
                             <div class="button-row d-flex mt-4 col-12">
@@ -428,52 +428,15 @@ if ($admin_details) {
     }
   </script>
 
-  <script>
-    function allowLettersOnly(input) {
-      var regex = /[^A-Za-z\s]/g;
-      input.value = input.value.replace(regex, '');
-    }
-
-    function validateNumericInput(input) {
-      // Remove non-numeric characters using a regular expression
-      var numericValue = input.value.replace(/[^0-9]/g, '');
-
-      if (numericValue.length <= 10) {
-        // Update the input value with the cleaned numeric value
-        input.value = numericValue;
-      } else {
-        input.value = numericValue.slice(0, 10);
-      }
-    }
-  </script>
-
   <script src="assets/js/core/popper.min.js"></script>
   <script src="assets/js/core/bootstrap.min.js"></script>
   <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="assets/js/plugins/choices.min.js"></script>
   <script src="assets/js/plugins/multistep-form.js"></script>
-
-  <script>
-    if (document.getElementById('choices-state')) {
-      var element = document.getElementById('choices-state');
-      const example = new Choices(element, {
-        searchEnabled: false
-      });
-    };
-  </script>
-
   <script src="assets/js/plugins/dragula/dragula.min.js"></script>
   <script src="assets/js/plugins/jkanban/jkanban.js"></script>
   <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-
     // Handle drag-and-drop as well as file selection
     document.querySelectorAll('.drag-input').forEach((inputDiv) => {
       const fileInput = inputDiv.querySelector('input[type="file"]');

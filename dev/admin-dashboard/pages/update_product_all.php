@@ -2,8 +2,8 @@
 session_start();
 require '../../conf/db.php';
 if (!isset($_SESSION['admin'])) {
-    header("Location: ../../login.php");
-    exit();
+  header("Location: ../../login.php");
+  exit();
 }
 
 $email_id = $_SESSION['admin']; // Assuming admin ID is stored in the session
@@ -15,27 +15,26 @@ $admin_details = $stmt->fetch(PDO::FETCH_OBJ);
 
 // Check if admin details were found
 if ($admin_details) {
-    $full_name = $admin_details->full_name;
-    $email_id = $admin_details->email_id;
+  $full_name = $admin_details->full_name;
+  $email_id = $admin_details->email_id;
 } else {
-    echo "Admin details not found.";
-    exit();
+  echo "Admin details not found.";
+  exit();
 }
 
 
 try {
-    // Prepare the statement with a placeholder
-    $stmt = $conn->prepare("SELECT * FROM main_shoes");
-    
-    // Execute the query
-    $stmt->execute();
-    
-    // Fetch all rows as an associative array
-    $shoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $totalDoneThisMonth = count($shoes);
-    
+  // Prepare the statement with a placeholder
+  $stmt = $conn->prepare("SELECT * FROM main_shoes");
+
+  // Execute the query
+  $stmt->execute();
+
+  // Fetch all rows as an associative array
+  $shoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $totalDoneThisMonth = count($shoes);
 } catch (PDOException $e) {
-    echo "Query failed: " . $e->getMessage();
+  echo "Query failed: " . $e->getMessage();
 }
 
 ?>
@@ -64,36 +63,36 @@ try {
   <style>
     /* For main and nested tables */
     .table-bordered {
-            border: 1px solid black;
-            border-collapse: collapse;
-            /* Removes double borders */
-        }
+      border: 1px solid black;
+      border-collapse: collapse;
+      /* Removes double borders */
+    }
 
-        /* For table headers and cells */
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid black;
-            /* Ensures a single black border */
-            padding: 8px;
-            /* Optional: Adjust padding for better readability */
-            text-align: center;
-            /* Centers the text */
-        }
+    /* For table headers and cells */
+    .table-bordered th,
+    .table-bordered td {
+      border: 1px solid black;
+      /* Ensures a single black border */
+      padding: 8px;
+      /* Optional: Adjust padding for better readability */
+      text-align: center;
+      /* Centers the text */
+    }
 
-        /* Remove default table styling if needed */
-        table {
-            width: 100%;
-        }
+    /* Remove default table styling if needed */
+    table {
+      width: 100%;
+    }
   </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
-    <!-- sidebar -->
-      <?php include '../config/sidebar.php'; ?>
-    <!-- End sidebar -->
+  <!-- sidebar -->
+  <?php include '../config/sidebar.php'; ?>
+  <!-- End sidebar -->
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
-      <?php include '../config/nav.php'; ?>
+    <?php include '../config/nav.php'; ?>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <!--div class="row">
@@ -170,12 +169,16 @@ try {
                     <span class="font-weight-bold ms-1" style="color:#ff00f7"><?php echo $totalDoneThisMonth; ?> done</span> this month
                   </p>
                 </div>
-                 
+
+                <div style="text-align: right; margin-bottom: 10px;">
+                  <input style="color: #FF0080;" type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for Bill No...">
+                </div>
+                
               </div>
             </div>
             <div class="card-body px-0 pb-2">
               <div class="table-responsive">
-              <table class="table-bordered">
+                <table class="table-bordered" id="recordTable">
                   <thead style="color: #FF0080;">
                     <tr>
                       <th>Action</th>
@@ -221,17 +224,68 @@ try {
             </div>
           </div>
         </div>
- 
+
       </div>
-       
+
     </div>
   </main>
- 
+
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    function searchTable() {
+      var input = document.getElementById("searchInput");
+      var filter = input.value.toUpperCase();
+      var table = document.getElementById("recordTable");
+      var rows = table.getElementsByTagName("tr");
+
+      // Loop through all table rows (skip the header row)
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var cells = row.getElementsByTagName("td");
+        var match = false;
+
+        // Check the outer table columns (Bill No, Customer Name, Phone No, Grand Total)
+        for (var j = 0; j < cells.length - 1; j++) { // Exclude last column (Product Details)
+          var cell = cells[j];
+          var textValue = cell.textContent || cell.innerText;
+          if (textValue.toUpperCase().indexOf(filter) > -1) {
+            match = true;
+            break;
+          }
+        }
+
+        // Check the Product Details column (if it contains a nested table)
+        if (!match && cells[cells.length - 1]) {
+          var nestedTable = cells[cells.length - 1].querySelector('table');
+          if (nestedTable) {
+            var nestedRows = nestedTable.getElementsByTagName('tr');
+            for (var k = 1; k < nestedRows.length; k++) { // Skip nested table header row
+              var nestedCells = nestedRows[k].getElementsByTagName('td');
+              for (var l = 0; l < nestedCells.length; l++) {
+                var nestedText = nestedCells[l].textContent || nestedCells[l].innerText;
+                if (nestedText.toUpperCase().indexOf(filter) > -1) {
+                  match = true;
+                  break;
+                }
+              }
+              if (match) break;
+            }
+          }
+        }
+
+        // Show or hide the row based on the match
+        if (match) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      }
+    }
+  </script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
